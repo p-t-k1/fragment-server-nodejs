@@ -23,6 +23,24 @@ const userEndpoint = (router) => {
         }
     });
 
+    router.post('/api/notes/findAll', async (request, response, next) => {
+        try {
+            const result = await business.getNoteManager(request).findAllNotes(request.body.userId);
+            response.status(200).send(result);
+        } catch (error) {
+            applicationException.errorHandler(error, response);
+        }
+    });
+
+    router.post('/api/notes/findUserBooks', async (request, response, next) => {
+        try {
+            const result = await business.getNoteManager(request).findUserBooks(request.body.userId);
+            response.status(200).send(result);
+        } catch (error) {
+            applicationException.errorHandler(error, response);
+        }
+    });
+
     router.delete('/api/user/logout/:userId', async (request, response, next) => {
         try {
             console.log(JSON.stringify(request.body))

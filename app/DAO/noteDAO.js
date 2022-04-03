@@ -5,75 +5,40 @@ import Promise from 'bluebird';
 import applicationException from '../service/applicationException';
 import mongoConverter from '../service/mongoConverter';
 import uniqueValidator from 'mongoose-unique-validator';
+import ObjectId from "mongoose/lib/drivers/browser/objectid";
 
 
-const userRole = {
-  admin: 'admin',
-  user: 'user'
-};
-
-const userRoles = [userRole.admin, userRole.user];
-
-const userSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
-  name: { type: String, required: true, unique: true },
-  role: { type: String, enum: userRoles, default: userRole.admin, required: false },
-  active: { type: Boolean, default: true, required: false },
-  isAdmin: { type: Boolean, default: true, required: false }
+const noteSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true, unique: false },
+  content: { type: String, required: true, unique: false },
+  bookTitle: { type: String, required: false, unique: false },
+  bookAuthor: { type: String, required: false, unique: false },
+  cover: { type: String, required: false, unique: false },
 }, {
-  collection: 'user'
+  collection: 'note'
 });
 
-userSchema.plugin(uniqueValidator);
+const NoteModel = mongoose.model('note', noteSchema);
 
-const UserModel = mongoose.model('user', userSchema);
-
-function createNewOrUpdate(user) {
-  return Promise.resolve().then(() => {
-    if (!user.id) {
-      return new UserModel(user).save().then(result => {
-        if (result) {
-          return mongoConverter(result);
-        }
-      });
-    } else {
-      return UserModel.findByIdAndUpdate(user.id, _.omit(user, 'id'), { new: true });
-    }
-  }).catch(error => {
-    if ('ValidationError' === error.name) {
-      error = error.errors[Object.keys(error.errors)[0]];
-      throw applicationException.new(applicationException.BAD_REQUEST, error.message);
-    }
-    throw error;
-  });
-}
-
-async function getByEmailOrName(name) {
-  const result = await UserModel.findOne({ $or: [{ email: name }, { name: name }] });
+async function getAllNotesByUserId(userId) {
+  const result = await NoteModel.find( { "userId": ObjectId(userId) } );
   if (result) {
     return mongoConverter(result);
   }
-  throw applicationException.new(applicationException.NOT_FOUND, 'User not found');
+  throw applicationException.new(applicationException.NOT_FOUND, 'Notes not found');
 }
 
-async function get(id) {
-  const result = await UserModel.findOne({ _id: id });
+async function getBooksByUserId(userId) {
+  const result = await NoteModel.find( { "userId": ObjectId(userId) } ).distinct("cover");
   if (result) {
     return mongoConverter(result);
   }
-  throw applicationException.new(applicationException.NOT_FOUND, 'User not found');
-}
-
-async function removeById(id) {
-  return await UserModel.findByIdAndRemove(id);
+  throw applicationException.new(applicationException.NOT_FOUND, 'Books not found');
 }
 
 export default {
-  createNewOrUpdate: createNewOrUpdate,
-  getByEmailOrName: getByEmailOrName,
-  get: get,
-  removeById: removeById,
+  getAllNotesByUserId:getAllNotesByUserId,
+  getBooksByUserId:getBooksByUserId,
 
-  userRole: userRole,
-  model: UserModel
+  model:NoteModel
 };

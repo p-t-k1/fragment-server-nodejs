@@ -1,6 +1,7 @@
 'use strict';
 
 import userManager from './user.manager';
+import noteManager from './note.manager'
 
 
 function getter(manager, request) {
@@ -10,5 +11,6 @@ function getter(manager, request) {
 }
 
 export default {
-    getUserManager: getter(userManager)
+    getUserManager: getter(userManager),
+    getNoteManager:getter(noteManager)
 };
