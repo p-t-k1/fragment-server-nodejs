@@ -23,7 +23,7 @@ function create(context) {
   }
 
   function getToken(token) {
-    return {token: token.value};
+    return {userId: token.userId};
   }
 
   async function createNewOrUpdate(userData) {

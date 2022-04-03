@@ -5,6 +5,7 @@ import auth from '../middleware/auth';
 
 const userEndpoint = (router) => {
     router.post('/api/user/auth', async (request, response, next) => {
+        console.log(JSON.stringify(request.body))
         try {
             let result = await business.getUserManager(request).authenticate(request.body.login, request.body.password);
             response.status(200).send(result);
@@ -22,8 +23,9 @@ const userEndpoint = (router) => {
         }
     });
 
-    router.delete('/api/user/logout/:userId', auth,  async (request, response, next) => {
+    router.delete('/api/user/logout/:userId', async (request, response, next) => {
         try {
+            console.log(JSON.stringify(request.body))
             let result = await business.getUserManager(request).removeHashSession(request.body.userId);
             response.status(200).send(result);
         } catch (error) {
