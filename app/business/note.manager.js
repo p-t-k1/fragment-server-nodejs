@@ -12,17 +12,29 @@ function create(context) {
     return notes;
   }
 
+  async function createNewNote(data) {
+    const note = await NoteDAO.createNewNote(data);
+    if (!note) {
+      throw applicationException.new(applicationException.NOT_FOUND, 'Created note not found');
+    }
+    return note;
+  }
+
   async function findUserBooks(userId) {
-    const notes = await NoteDAO.getBooksByUserId(userId);
-    if (!notes) {
+    const books = await NoteDAO.getBooksByUserId(userId);
+    if (!books) {
       throw applicationException.new(applicationException.NOT_FOUND, 'Books for that user id do not exists');
     }
-    return notes;
+    let filtered = books.filter(function (el) {
+      return el != "";
+    });
+    return filtered;
   }
 
   return {
     findAllNotes: findAllNotes,
-    findUserBooks:findUserBooks
+    findUserBooks:findUserBooks,
+    createNewNote:createNewNote
   };
 }
 

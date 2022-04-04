@@ -28,10 +28,19 @@ async function getAllNotesByUserId(userId) {
   throw applicationException.new(applicationException.NOT_FOUND, 'Notes not found');
 }
 
+async function createNewNote(data) {
+    const result = await new NoteModel({ userId: data.userId,content:data.content,bookTitle:data.bookTitle,bookAuthor:data.bookAuthor,cover:data.cover}).save();
+    if (result) {
+      return mongoConverter(result);
+    }b
+  throw applicationException.new(applicationException.FORBIDDEN, 'Could not create new note');
+}
+
 async function getBooksByUserId(userId) {
-  const result = await NoteModel.find( { "userId": ObjectId(userId) } ).distinct("cover");
+  const result = await NoteModel.distinct("cover",{ "userId": ObjectId(userId) });
+  console.log(result)
   if (result) {
-    return mongoConverter(result);
+    return result;
   }
   throw applicationException.new(applicationException.NOT_FOUND, 'Books not found');
 }
@@ -39,6 +48,7 @@ async function getBooksByUserId(userId) {
 export default {
   getAllNotesByUserId:getAllNotesByUserId,
   getBooksByUserId:getBooksByUserId,
+  createNewNote:createNewNote,
 
   model:NoteModel
 };
