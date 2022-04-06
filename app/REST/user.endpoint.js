@@ -43,7 +43,6 @@ const userEndpoint = (router) => {
 
     router.post('/api/notes/saveNote', async (request, response, next) => {
         try {
-            console.log(request.body)
             const result = await business.getNoteManager(request).createNewNote(request.body);
             response.status(200).send(result);
         } catch (error) {

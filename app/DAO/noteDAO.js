@@ -29,16 +29,17 @@ async function getAllNotesByUserId(userId) {
 }
 
 async function createNewNote(data) {
-    const result = await new NoteModel({ userId: data.userId,content:data.content,bookTitle:data.bookTitle,bookAuthor:data.bookAuthor,cover:data.cover}).save();
+  console.log(JSON.stringify(data))
+    const bookDetails = await NoteModel.findOne( { "cover":data.cover } );
+    const result = await new NoteModel({ userId: data.userId,content:data.content,bookTitle:bookDetails.bookTitle,bookAuthor:bookDetails.bookAuthor,cover:data.cover}).save();
     if (result) {
       return mongoConverter(result);
-    }b
+    }
   throw applicationException.new(applicationException.FORBIDDEN, 'Could not create new note');
 }
 
 async function getBooksByUserId(userId) {
   const result = await NoteModel.distinct("cover",{ "userId": ObjectId(userId) });
-  console.log(result)
   if (result) {
     return result;
   }

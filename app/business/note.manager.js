@@ -25,10 +25,7 @@ function create(context) {
     if (!books) {
       throw applicationException.new(applicationException.NOT_FOUND, 'Books for that user id do not exists');
     }
-    let filtered = books.filter(function (el) {
-      return el != "";
-    });
-    return filtered;
+    return books;
   }
 
   return {
