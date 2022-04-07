@@ -1,5 +1,6 @@
 import NoteDAO from '../DAO/noteDAO'
 import applicationException from '../service/applicationException';
+import TokenDAO from "../DAO/tokenDAO";
 
 
 function create(context) {
@@ -28,10 +29,15 @@ function create(context) {
     return books;
   }
 
+  async function removeNoteById(id) {
+    return await NoteDAO.removeById(id);
+  }
+
   return {
     findAllNotes: findAllNotes,
     findUserBooks:findUserBooks,
-    createNewNote:createNewNote
+    createNewNote:createNewNote,
+    removeNoteById:removeNoteById
   };
 }
 

@@ -50,9 +50,17 @@ const userEndpoint = (router) => {
         }
     });
 
+    router.delete('/api/user/notes/delete', async (request, response, next) => {
+        try {
+            let result = await business.getNoteManager(request).removeNoteById(request.body.noteId);
+            response.status(200).send(result);
+        } catch (error) {
+            applicationException.errorHandler(error, response);
+        }
+    });
+
     router.delete('/api/user/logout/:userId', async (request, response, next) => {
         try {
-            console.log(JSON.stringify(request.body))
             let result = await business.getUserManager(request).removeHashSession(request.body.userId);
             response.status(200).send(result);
         } catch (error) {

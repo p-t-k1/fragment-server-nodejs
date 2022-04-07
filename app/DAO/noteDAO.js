@@ -46,10 +46,15 @@ async function getBooksByUserId(userId) {
   throw applicationException.new(applicationException.NOT_FOUND, 'Books not found');
 }
 
+async function removeById(id) {
+  return await NoteModel.findByIdAndRemove(id);
+}
+
 export default {
   getAllNotesByUserId:getAllNotesByUserId,
   getBooksByUserId:getBooksByUserId,
   createNewNote:createNewNote,
+  removeById:removeById,
 
   model:NoteModel
 };
