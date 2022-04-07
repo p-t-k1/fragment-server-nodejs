@@ -30,8 +30,14 @@ async function getAllNotesByUserId(userId) {
 
 async function createNewNote(data) {
   console.log(JSON.stringify(data))
-    const bookDetails = await NoteModel.findOne( { "cover":data.cover } );
-    const result = await new NoteModel({ userId: data.userId,content:data.content,bookTitle:bookDetails.bookTitle,bookAuthor:bookDetails.bookAuthor,cover:data.cover}).save();
+  let result
+    if(data.cover !== ""){
+      const bookDetails = await NoteModel.findOne( { "cover":data.cover } );
+      result = await new NoteModel({ userId: data.userId,content:data.content,bookTitle:bookDetails.bookTitle,bookAuthor:bookDetails.bookAuthor,cover:data.cover}).save();
+    }
+    else {
+      result = await new NoteModel({ userId: data.userId,content:data.content,bookTitle:"",bookAuthor:"",cover:""}).save();
+    }
     if (result) {
       return mongoConverter(result);
     }
