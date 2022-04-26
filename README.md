@@ -1,3 +1,1 @@
-# node_pattern# fragment-server-nodejs
-# fragment-server-nodejs
-# fragment-server-nodejs
+# MongoDB Node Express server for React Native App 
